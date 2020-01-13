@@ -39,7 +39,7 @@ router.delete("/users/:id", async(req, res) => {
 
 router.patch("/users/:id", async (req, res) => {
     const updates = Object.keys(req.body);
-    const allowedUpdates = ["email"];
+    const allowedUpdates = ["Email", "Name", "Graduated"];
     const isValidOperation = updates.every(update => allowedUpdates.includes(update)
     );
     try {
@@ -49,12 +49,5 @@ router.patch("/users/:id", async (req, res) => {
         res.status(500).send(error);
     }
 });
-router.get("/users",  async (req, res) => {
-    try {
-        const user = await user.find({ year: { $gte: 2000, $lte: 2020 } });
-      res.send(user);  
-    }catch (error) {
-        res.status(500).send(error);
-    }
-});
+
 module.exports = router;
