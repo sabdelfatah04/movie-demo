@@ -5,7 +5,24 @@ const movieRouter = require("./routers/movies");
 const userRouter = require("./routers/users");
 app.use(express.json());
 app.use(movieRouter);
-app.use(userRouter)
+app.use(userRouter);
+
 app.listen(3000, () => {
     console.log("Server up on 3000");
 });
+
+
+
+//bcrypt hashing will occur as middlewar durign requests
+/* 
+const bcyrpt = require("bcryptjs");
+const testFunction = async ()=> {
+    const password = "siths1234";
+    const hashedPassword = await bcyrpt.hash(password, 8);
+    console.log(password);
+    console.log(hashedPassword);
+
+    const isMatch = await bcyrpt.compare("obeysudo", hashedPassword);
+    console.log(isMatch)
+};
+testFunction(); */
