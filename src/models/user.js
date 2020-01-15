@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
   Email: {
     type: String,
     required: true,
+    unique: true,
     trim: true,
     lowercase: true,
     validate(value) {
@@ -25,7 +26,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    minlength:6,
+    minlength: 6,
     validate(value){
       if (value.toLowerCase().includes("password")){
         throw new Error('Password cannot contain "password');
@@ -40,12 +41,24 @@ const userSchema = new mongoose.Schema({
 
 userSchema.pre("save", async function(next){
   const user = this;
-  if (user.isModified("password")){
+  if (user.isModified("Password")){
     user.Password = await bcrypt.hash(user.Password, 7);
   }
   next();
 });
 //when we send a pst or patch request, then bcrypt will run BEFORE the user password is saved to the mongo object.
+
+userSchema.statics.findByCredentials = async (Email, Password) =>{
+  const user = await User.findOne({ Email });
+  if(!user){
+    throw new Error("unable to login");
+  }
+  const isMatch = await bcrypt.compare(Password, user.Password);
+  if(!isMatch){
+    throw new Error("incorrect password");
+  }
+  return user;
+}
 const User = mongoose.model("user", userSchema);
 
 module.exports = User;

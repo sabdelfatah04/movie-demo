@@ -11,6 +11,17 @@ router.post("/users", async (req, res) => {
         res.status(500).send(error);
     }
 });
+router.post("/users/login", async (req, res) =>{
+try {
+    const user = await User.findByCredentials(
+        req.body.Email,
+        req.body.Password
+    );
+    res.send(user);
+} catch (error) {
+    res.status(500).send(error);
+}
+});
 router.get("/users", async (req, res) => {
     try{
         let users = await User.find({});
@@ -44,7 +55,7 @@ router.patch("/users/:id", async (req, res) => {
     );
     try {
         const user = await User.findByIdAndUpdate(req.params.id, req.body);
-        res.send(movie);
+        res.send(user);
     } catch (error) {
         res.status(500).send(error);
     }
