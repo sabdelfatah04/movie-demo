@@ -6,7 +6,8 @@ router.post("/users", async (req, res) => {
     try{
         const user = new User(req.body);
         await user.save();
-        res.send(user);
+        const token = await user.generateToken(); //lowercase so that token is generated for only this user
+        res.send({user, token});
     }catch (error){
         res.status(500).send(error);
     }
@@ -30,7 +31,9 @@ router.get("/users", async (req, res) => {
         res.status(500).send(error);
     }
 });
-
+router.get("/users/me", auth, async(req, res) => {
+    res.send(req.user);
+});
 router.get("/users/:id",  async (req, res) => {
     try {
       let user = await User.findById(req.params.id);
