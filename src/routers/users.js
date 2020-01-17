@@ -1,5 +1,6 @@
 const express = require("express");
 const User = require("../models/user");
+const auth = require("../middleware/auth");
 const router = new express.Router();
 
 router.post("/users", async (req, res) => {
@@ -15,10 +16,12 @@ router.post("/users", async (req, res) => {
 router.post("/users/login", async (req, res) =>{
 try {
     const user = await User.findByCredentials(
-        req.body.Email,
-        req.body.Password
+        req.body.email,
+        req.body.password
     );
-    res.send(user);
+    const token = await user.generateToken();
+
+    res.send({user, token});
 } catch (error) {
     res.status(500).send(error);
 }
@@ -53,7 +56,7 @@ router.delete("/users/:id", async(req, res) => {
 
 router.patch("/users/:id", async (req, res) => {
     const updates = Object.keys(req.body);
-    const allowedUpdates = ["Email", "Name", "Graduated"];
+    const allowedUpdates = ["email", "name", "graduated"];
     const isValidOperation = updates.every(update => allowedUpdates.includes(update)
     );
     try {

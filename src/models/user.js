@@ -6,12 +6,12 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const userSchema = new mongoose.Schema({
-  Name: {
+  name: {
     type: String,
     trim: true,
     required: true
   },
-  Email: {
+  email: {
     type: String,
     required: true,
     unique: true,
@@ -23,18 +23,18 @@ const userSchema = new mongoose.Schema({
       }
     }
   },
-  Password: {
+  password: {
     type: String,
     required: true,
     trim: true,
     minlength: 6,
     validate(value){
       if (value.toLowerCase().includes("password")){
-        throw new Error('Password cannot contain "password');
+        throw new Error('password cannot contain "password');
       }
     }
   },
-  Graduated: {
+  graduated: {
     type: Boolean,
     default: false
   },
@@ -58,19 +58,19 @@ userSchema.methods.generateToken = async function() {
 
 userSchema.pre("save", async function(next){
   const user = this;
-  if (user.isModified("Password")){
-    user.Password = await bcrypt.hash(user.Password, 7);
+  if (user.isModified("password")){
+    user.password = await bcrypt.hash(user.password, 7);
   }
   next();
 });
 //when we send a pst or patch request, then bcrypt will run BEFORE the user password is saved to the mongo object.
 
-userSchema.statics.findByCredentials = async (Email, Password) =>{
-  const user = await User.findOne({ Email });
+userSchema.statics.findByCredentials = async (email, password) =>{
+  const user = await User.findOne({ email });
   if(!user){
     throw new Error("unable to login");
   }
-  const isMatch = await bcrypt.compare(Password, user.Password);
+  const isMatch = await bcrypt.compare(password, user.password);
   if(!isMatch){
     throw new Error("incorrect password");
   }
