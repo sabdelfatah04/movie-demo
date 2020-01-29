@@ -7,12 +7,17 @@ const Review = mongoose.model("review", {
   reviewScore: {
     type: Number,
     required: true,
-    min: 0,
+    min: 1,
     max: 5
   },
   reviewText: {
     type: String,
     required: true
+  },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "user"
   }
 });
 
