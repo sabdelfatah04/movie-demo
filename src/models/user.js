@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    minlength: 6,
+    minLength: 6,
     validate(value){
       if (value.toLowerCase().includes("password")){
         throw new Error('password cannot contain "password');
@@ -82,6 +82,6 @@ userSchema.statics.findByCredentials = async (email, password) =>{
   }
   return user;
 }
-const User = mongoose.model("user", userSchema);
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;

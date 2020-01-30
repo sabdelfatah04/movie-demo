@@ -1,8 +1,9 @@
 const express = require("express");
 const Review = require("../models/review");
+const auth = require("../middleware/auth");
 const router = new express.Router();
 
-router.post("/reviews", async (req, res) => {
+router.post("/reviews", auth, async (req, res) => {
     const review = new Review({
         ...req.body,
         owner: req.user._id
@@ -44,7 +45,7 @@ router.delete("/reviews/:id", async(req, res) => {
 
 router.patch("/reviews/:id", async (req, res) => {
     const updates = Object.keys(req.body);
-    const allowedUpdates = ["genre"];
+    const allowedUpdates = ["reviewText"];
     const isValidOperation = updates.every(update => allowedUpdates.includes(update)
     );
     try {

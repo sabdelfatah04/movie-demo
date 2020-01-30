@@ -40,4 +40,12 @@ const testFunction = async () =>{
     console.log(data);
 };
 testFunction(); */
+const Review = require("./models/review");
+const User = require("./models/user");
 
+const test = async () => {
+    const review = await Review.findById("5e3306a54b45a429a80d838a");
+    await review.populate("owner").execPopulate();
+    console.log(review.owner);
+};
+test();
