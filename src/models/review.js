@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Review = mongoose.model("Review", {
+const reviewSchema = new mongoose.Schema({
   movie: {
     type: String,
     required: true
@@ -25,4 +25,5 @@ const Review = mongoose.model("Review", {
 }
 );
 
+const Review = mongoose.model("Review", reviewSchema);
 module.exports = Review;

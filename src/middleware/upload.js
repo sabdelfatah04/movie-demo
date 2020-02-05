@@ -1,8 +1,7 @@
 const multer = require("multer");
 const upload = multer({
-    dest:"profilePics",
     limits:{
-        fileSize: 500
+        fileSize: 2000000
     },
     fileFilter(req, file, cb){
         if(!file.originalname.match(/\.(jpg|jpeg|png)$/)){
