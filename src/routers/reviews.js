@@ -26,7 +26,18 @@ router.get("/reviews", async (req, res) => {
 });
 router.get("/reviews/me", auth, async(req, res) => {
     try {
-    await req.user.populate("reviews").execPopulate();
+    const limit = parseInt(req.query.limit);
+    const skip = parseInt(req.query.skip);
+    await req.user
+    .populate({
+        path: "reviews",
+        options: {
+            limit: parseInt(limit),
+            skip: parseInt(skip),
+            sort: { movie: sort}
+        }
+    })
+    .execPopulate();
     res.send(req.user.reviews);    
     } catch (error) {
         res.send(error);
@@ -34,8 +45,14 @@ router.get("/reviews/me", auth, async(req, res) => {
 });
 router.get("/reviews/:id",  async (req, res) => {
     const movie = req.params.id;
+    const limit = parseInt(req.query.limit);
+    const skip = parseInt(req.query.skip);
+    const sort = parseInt(req.query.sort);
     try {
-      let reviews = await Review.find({ movie : movie });
+      let reviews = await Review.find({ movie : movie })
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: sort});
       res.send(reviews);  
     }catch (error) {
         res.status(500).send(error);
